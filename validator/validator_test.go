@@ -21,38 +21,38 @@ import (
 	"github.com/tikv/client-validator/validator"
 )
 
-var _ = validator.Feature("A", "describe A", nil, func(_ validator.ExecContext) validator.FeatureStatus {
+var _ = validator.RegisterFeature("A", "describe A", nil, func(_ validator.ExecContext) validator.FeatureStatus {
 	return validator.FeaturePass
 })
 
-var _ = validator.Feature("B", "describe B", nil, func(_ validator.ExecContext) validator.FeatureStatus {
+var _ = validator.RegisterFeature("B", "describe B", nil, func(_ validator.ExecContext) validator.FeatureStatus {
 	return validator.FeatureNotImplemented
 })
 
-var _ = validator.Feature("C", "describe C", nil, func(_ validator.ExecContext) validator.FeatureStatus {
+var _ = validator.RegisterFeature("C", "describe C", nil, func(_ validator.ExecContext) validator.FeatureStatus {
 	return validator.FeatureFail
 })
 
-var _ = validator.Feature("D", "describe D", []string{"A"}, func(_ validator.ExecContext) validator.FeatureStatus {
+var _ = validator.RegisterFeature("D", "describe D", []string{"A"}, func(_ validator.ExecContext) validator.FeatureStatus {
 	return validator.FeaturePass
 })
 
-var _ = validator.Feature("E", "describe E", []string{"A", "B"}, func(_ validator.ExecContext) validator.FeatureStatus {
+var _ = validator.RegisterFeature("E", "describe E", []string{"A", "B"}, func(_ validator.ExecContext) validator.FeatureStatus {
 	return validator.FeatureNotImplemented
 })
 
-var _ = validator.Feature("F", "describe F", []string{"A", "D"}, func(ctx validator.ExecContext) validator.FeatureStatus {
+var _ = validator.RegisterFeature("F", "describe F", []string{"A", "D"}, func(ctx validator.ExecContext) validator.FeatureStatus {
 	ctx.Log("foobar")
 	return validator.FeaturePass
 })
 
-var _ = validator.Story("E and F", "E", "F")
+var _ = validator.RegisterStory("E and F", "E", "F")
 
-var _ = validator.Feature("G", "describe G", nil, func(_ validator.ExecContext) validator.FeatureStatus {
+var _ = validator.RegisterFeature("G", "describe G", nil, func(_ validator.ExecContext) validator.FeatureStatus {
 	return validator.FeaturePass
 })
 
-var _ = validator.Test("test G", []string{"G"}, func(ctx validator.ExecContext) {
+var _ = validator.RegisterTest("test G", []string{"G"}, func(ctx validator.ExecContext) {
 	ctx.Fail("G has a bug")
 })
 

@@ -39,8 +39,8 @@ const (
 	FeatureSkip FeatureStatus = "SKIP"
 )
 
-// Feature defines a feature. All features should be registered before main().
-func Feature(key, description string, requireFeatures []string, checkF func(ExecContext) FeatureStatus) string {
+// RegisterFeature defines a feature. All features should be registered before main().
+func RegisterFeature(key, description string, requireFeatures []string, checkF func(ExecContext) FeatureStatus) string {
 	confMu.Lock()
 	defer confMu.Unlock()
 	for _, feature := range featureConfs {
@@ -57,17 +57,17 @@ func Feature(key, description string, requireFeatures []string, checkF func(Exec
 	return key
 }
 
-// Story is a list of features. The features will be placed together in the test report.
-func Story(description string, features ...string) struct{} {
+// RegisterStory is a list of features. The features will be placed together in the test report.
+func RegisterStory(description string, features ...string) struct{} {
 	confMu.Lock()
 	defer confMu.Unlock()
 	storyConfs = append(storyConfs, storyConf{description: description, features: features})
 	return struct{}{}
 }
 
-// Test defines a test case. If testF panics, all features will be marked as
+// RegisterTest defines a test case. If testF panics, all features will be marked as
 // Defect. All tests should be registered before main().
-func Test(description string, features []string, testF func(ExecContext)) struct{} {
+func RegisterTest(description string, features []string, testF func(ExecContext)) struct{} {
 	confMu.Lock()
 	defer confMu.Unlock()
 	testConfs = append(testConfs, testConf{
