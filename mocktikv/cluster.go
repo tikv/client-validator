@@ -18,9 +18,14 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 )
+
+var httpClient = http.Client{
+	Timeout: 10 * time.Second,
+}
 
 // MockCluster contains the mock cluster info respond from mock-tikv.
 // It should be kept synced with mock-tikv.
@@ -46,7 +51,7 @@ type Cluster struct {
 
 // NewCluster creates a mock cluster in mock-tikv server.
 func NewCluster(mockServer string) (*Cluster, error) {
-	res, err := http.Post(mockServer+"/mock-tikv/api/v1/clusters", "application/json", strings.NewReader("{}"))
+	res, err := httpClient.Post(mockServer+"/mock-tikv/api/v1/clusters", "application/json", strings.NewReader("{}"))
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -89,6 +94,6 @@ func (c *Cluster) Close() error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	_, err = http.DefaultClient.Do(req)
+	_, err = httpClient.Do(req)
 	return errors.WithStack(err)
 }
