@@ -13,7 +13,7 @@
 
 package stub
 
-// RawRequest is the structure of a rawkv request that the http proxy accepts.\
+// RawRequest is the structure of a rawkv request that the http proxy accepts.
 // It should be kept synced with the proxy server.
 type RawRequest struct {
 	PDAddrs  []string `json:"pd_addrs,omitempty"`  // for new
