@@ -29,7 +29,7 @@ func (t testRawKV) newCluster(ctx validator.ExecContext) *mocktikv.Cluster {
 	return cluster
 }
 
-var _ = validator.Feature("rawkv.new", "create a rawkv client", nil, testRawKV{}.checkClientCreate)
+var _ = validator.RegisterFeature("rawkv.new", "create a rawkv client", nil, testRawKV{}.checkClientCreate)
 
 func (t testRawKV) checkClientCreate(ctx validator.ExecContext) validator.FeatureStatus {
 	cluster := t.newCluster(ctx)
@@ -49,7 +49,7 @@ func (t testRawKV) newClient(ctx validator.ExecContext) (*mocktikv.Cluster, *stu
 	return cluster, client
 }
 
-var _ = validator.Feature("rawkv.close", "close a rawkv client", nil, testRawKV{}.checkClose)
+var _ = validator.RegisterFeature("rawkv.close", "close a rawkv client", nil, testRawKV{}.checkClose)
 
 func (t testRawKV) checkClose(ctx validator.ExecContext) validator.FeatureStatus {
 	cluster, client := t.newClient(ctx)
@@ -58,7 +58,7 @@ func (t testRawKV) checkClose(ctx validator.ExecContext) validator.FeatureStatus
 	return errToFeatureStatus(err)
 }
 
-var _ = validator.Feature("rawkv.put", "store key-value pair in rawkv mod", []string{"rawkv.new"}, testRawKV{}.checkPut)
+var _ = validator.RegisterFeature("rawkv.put", "store key-value pair in rawkv mod", []string{"rawkv.new"}, testRawKV{}.checkPut)
 
 func (t testRawKV) checkPut(ctx validator.ExecContext) validator.FeatureStatus {
 	cluster, client := t.newClient(ctx)
@@ -69,7 +69,7 @@ func (t testRawKV) checkPut(ctx validator.ExecContext) validator.FeatureStatus {
 	return errToFeatureStatus(err)
 }
 
-var _ = validator.Feature("rawkv.get", "load key-value pair in raw mod", []string{"rawkv.new"}, testRawKV{}.checkGet)
+var _ = validator.RegisterFeature("rawkv.get", "load key-value pair in raw mod", []string{"rawkv.new"}, testRawKV{}.checkGet)
 
 func (t testRawKV) checkGet(ctx validator.ExecContext) validator.FeatureStatus {
 	cluster, client := t.newClient(ctx)
@@ -84,7 +84,7 @@ func (t testRawKV) checkGet(ctx validator.ExecContext) validator.FeatureStatus {
 	return validator.FeaturePass
 }
 
-var _ = validator.Feature("rawkv.delete", "delete key-value pair in raw mod", []string{"rawkv.put"}, testRawKV{}.checkDelete)
+var _ = validator.RegisterFeature("rawkv.delete", "delete key-value pair in raw mod", []string{"rawkv.put"}, testRawKV{}.checkDelete)
 
 func (t testRawKV) checkDelete(ctx validator.ExecContext) validator.FeatureStatus {
 	cluster, client := t.newClient(ctx)
@@ -99,7 +99,7 @@ func (t testRawKV) checkDelete(ctx validator.ExecContext) validator.FeatureStatu
 
 // Ideally, `scan` does not have to depend on `put`. However, mock-tikv does not
 // support inject data directly now, so we need `put` to prepare some data.
-var _ = validator.Feature("rawkv.scan", "scan key-value pairs in raw mod", []string{"rawkv.put"}, testRawKV{}.checkScan)
+var _ = validator.RegisterFeature("rawkv.scan", "scan key-value pairs in raw mod", []string{"rawkv.put"}, testRawKV{}.checkScan)
 
 func (t testRawKV) checkScan(ctx validator.ExecContext) validator.FeatureStatus {
 	cluster, client := t.newClient(ctx)
@@ -119,9 +119,9 @@ func (t testRawKV) checkScan(ctx validator.ExecContext) validator.FeatureStatus 
 	return validator.FeaturePass
 }
 
-var _ = validator.Story("basic rawkv client", "rawkv.new", "rawkv.close", "rawkv.get", "rawkv.put", "rawkv.delete", "rawkv.scan")
+var _ = validator.RegisterStory("basic rawkv client", "rawkv.new", "rawkv.close", "rawkv.get", "rawkv.put", "rawkv.delete", "rawkv.scan")
 
-var _ = validator.Feature("rawkv.batch-get", "load rawkv in batches", []string{"rawkv.new"}, testRawKV{}.checkBatchGet)
+var _ = validator.RegisterFeature("rawkv.batch-get", "load rawkv in batches", []string{"rawkv.new"}, testRawKV{}.checkBatchGet)
 
 func (t testRawKV) checkBatchGet(ctx validator.ExecContext) validator.FeatureStatus {
 	cluster, client := t.newClient(ctx)
@@ -138,7 +138,7 @@ func (t testRawKV) checkBatchGet(ctx validator.ExecContext) validator.FeatureSta
 	return validator.FeaturePass
 }
 
-var _ = validator.Feature("rawkv.batch-put", "put rawkv in batches", []string{"rawkv.new"}, testRawKV{}.checkBatchPut)
+var _ = validator.RegisterFeature("rawkv.batch-put", "put rawkv in batches", []string{"rawkv.new"}, testRawKV{}.checkBatchPut)
 
 func (t testRawKV) checkBatchPut(ctx validator.ExecContext) validator.FeatureStatus {
 	cluster, client := t.newClient(ctx)
@@ -149,7 +149,7 @@ func (t testRawKV) checkBatchPut(ctx validator.ExecContext) validator.FeatureSta
 	return errToFeatureStatus(err)
 }
 
-var _ = validator.Feature("rawkv.batch-delete", "delete rawkv in batches", []string{"rawkv.new"}, testRawKV{}.checkBatchDelete)
+var _ = validator.RegisterFeature("rawkv.batch-delete", "delete rawkv in batches", []string{"rawkv.new"}, testRawKV{}.checkBatchDelete)
 
 func (t testRawKV) checkBatchDelete(ctx validator.ExecContext) validator.FeatureStatus {
 	cluster, client := t.newClient(ctx)
@@ -160,9 +160,9 @@ func (t testRawKV) checkBatchDelete(ctx validator.ExecContext) validator.Feature
 	return errToFeatureStatus(err)
 }
 
-var _ = validator.Story("rawkv batch operations", "rawkv.batch-get", "rawkv.batch-put", "rawkv.batch-delete")
+var _ = validator.RegisterStory("rawkv batch operations", "rawkv.batch-get", "rawkv.batch-put", "rawkv.batch-delete")
 
-var _ = validator.Feature("rawkv.delete-range", "delete rawkv range", []string{"rawkv.new"}, testRawKV{}.checkDeleteRange)
+var _ = validator.RegisterFeature("rawkv.delete-range", "delete rawkv range", []string{"rawkv.new"}, testRawKV{}.checkDeleteRange)
 
 func (t testRawKV) checkDeleteRange(ctx validator.ExecContext) validator.FeatureStatus {
 	cluster, client := t.newClient(ctx)
@@ -173,7 +173,7 @@ func (t testRawKV) checkDeleteRange(ctx validator.ExecContext) validator.Feature
 	return errToFeatureStatus(err)
 }
 
-var _ = validator.Test("simple rawkv get/put/delete", []string{"rawkv.get", "rawkv.put", "rawkv.delete"}, testRawKV{}.testSimple)
+var _ = validator.RegisterTest("simple rawkv get/put/delete", []string{"rawkv.get", "rawkv.put", "rawkv.delete"}, testRawKV{}.testSimple)
 
 func (t testRawKV) testSimple(ctx validator.ExecContext) {
 	cluster, client := t.newClient(ctx)
@@ -187,7 +187,7 @@ func (t testRawKV) testSimple(ctx validator.ExecContext) {
 	t.mustNotExist(ctx, client, "key")
 }
 
-var _ = validator.Test("put empty value is disallowed", []string{"rawkv.put"}, testRawKV{}.testPutEmptyValue)
+var _ = validator.RegisterTest("put empty value is disallowed", []string{"rawkv.put"}, testRawKV{}.testPutEmptyValue)
 
 func (t testRawKV) testPutEmptyValue(ctx validator.ExecContext) {
 	cluster, client := t.newClient(ctx)
@@ -198,7 +198,7 @@ func (t testRawKV) testPutEmptyValue(ctx validator.ExecContext) {
 	ctx.AssertNotNil(err)
 }
 
-var _ = validator.Test("batch operations, batch-put/batch-get/batch-delete", []string{"rawkv.batch-put", "rawkv.batch-get", "rawkv.batch-delete"}, testRawKV{}.testBatch)
+var _ = validator.RegisterTest("batch operations, batch-put/batch-get/batch-delete", []string{"rawkv.batch-put", "rawkv.batch-get", "rawkv.batch-delete"}, testRawKV{}.testBatch)
 
 func (t testRawKV) testBatch(ctx validator.ExecContext) {
 	cluster, client := t.newClient(ctx)
@@ -223,7 +223,7 @@ func (t testRawKV) testBatch(ctx validator.ExecContext) {
 	t.mustBatchNotExist(ctx, client, keys)
 }
 
-var _ = validator.Test("batch get with partial result", []string{"rawkv.batch-put", "rawkv.batch-get"}, testRawKV{}.testBatchGetPartial)
+var _ = validator.RegisterTest("batch get with partial result", []string{"rawkv.batch-put", "rawkv.batch-get"}, testRawKV{}.testBatchGetPartial)
 
 func (t testRawKV) testBatchGetPartial(ctx validator.ExecContext) {
 	cluster, client := t.newClient(ctx)
@@ -234,7 +234,7 @@ func (t testRawKV) testBatchGetPartial(ctx validator.ExecContext) {
 	t.mustBatchGet(ctx, client, []string{"k1", "k2", "k3", "k4"}, []string{"v1", "", "v3", ""})
 }
 
-var _ = validator.Test("region split", []string{"rawkv.get", "rawkv.put"}, testRawKV{}.testRegionSplit)
+var _ = validator.RegisterTest("region split", []string{"rawkv.get", "rawkv.put"}, testRawKV{}.testRegionSplit)
 
 func (t testRawKV) testRegionSplit(ctx validator.ExecContext) {
 	cluster, client := t.newClient(ctx)
@@ -248,7 +248,7 @@ func (t testRawKV) testRegionSplit(ctx validator.ExecContext) {
 	t.mustGet(ctx, client, "k3", "v3")
 }
 
-var _ = validator.Test("scan", []string{"rawkv.batch-put", "rawkv.scan"}, testRawKV{}.testScan)
+var _ = validator.RegisterTest("scan", []string{"rawkv.batch-put", "rawkv.scan"}, testRawKV{}.testScan)
 
 func (t testRawKV) testScan(ctx validator.ExecContext) {
 	cluster, client := t.newClient(ctx)
@@ -276,7 +276,7 @@ func (t testRawKV) testScan(ctx validator.ExecContext) {
 	check()
 }
 
-var _ = validator.Test("delete range", []string{"rawkv.batch-put", "rawkv.scan", "rawkv.delete-range"}, testRawKV{}.testDeleteRange)
+var _ = validator.RegisterTest("delete range", []string{"rawkv.batch-put", "rawkv.scan", "rawkv.delete-range"}, testRawKV{}.testDeleteRange)
 
 func (t testRawKV) testDeleteRange(ctx validator.ExecContext) {
 	cluster, client := t.newClient(ctx)
