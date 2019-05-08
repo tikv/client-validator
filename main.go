@@ -121,7 +121,7 @@ func printConsole(report *validator.Report) {
 			fmt.Printf("    [%v] %v\n", colorizeStatus(stateText), aurora.Bold(aurora.Cyan(r.Description)))
 			for _, l := range r.Logs {
 				fmt.Print("      ")
-				fmt.Println(aurora.Gray(l))
+				fmt.Println(aurora.Gray(8, l))
 			}
 		}
 	}
@@ -144,7 +144,7 @@ func colorizeStatus(text string) aurora.Value {
 	case "PASS":
 		return aurora.Green(text)
 	case "NOT_IMPL", "SKIP":
-		return aurora.Gray(text)
+		return aurora.Gray(8, text)
 	case "FAIL", "DEFECT":
 		return aurora.Red(text)
 	}
